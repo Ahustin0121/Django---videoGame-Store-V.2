@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary sticky-top py-3">
+    <div class="container">
+        <a class="navbar-brand fw-bold fs-4" href="/" style="font-family: 'Space Grotesk', sans-serif;">
+            <i class="fa-solid fa-gamepad text-info"></i> Pixel<span class="text-info">Vault</span>
+        </a>
+        <button class="navbar-toggler border-0 text-white shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto gap-lg-3 text-center text-lg-start my-3 my-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/' %}text-info active{% else %}text-secondary{% endif %}" href="/">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if 'videojuego' in request.path %}text-info active{% else %}text-secondary{% endif %}" href="{% url 'videojuegos' %}">Videojuegos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if 'consola' in request.path %}text-info active{% else %}text-secondary{% endif %}" href="{% url 'consolas' %}">Consolas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if 'contacto' in request.path %}text-info active{% else %}text-secondary{% endif %}" href="{% url 'contacto' %}">Contacto</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav gap-lg-3 text-center text-lg-start my-2 my-lg-0 align-items-lg-center">
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link text-info fw-semibold" href="{% url 'gestionar_videojuegos' %}"><i class="fa-solid fa-gauge-high me-1"></i>Panel Admin</a>
+                </li>
+                <li class="nav-item">
+                    <form action="{% url 'admin_logout' %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link text-danger border-0 bg-transparent">
+                            <i class="fa-solid fa-right-from-bracket me-1"></i>Salir
+                        </button>
+                    </form>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link text-secondary" href="{% url 'admin_login' %}"><i class="fa-solid fa-user-lock me-1"></i>Login</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

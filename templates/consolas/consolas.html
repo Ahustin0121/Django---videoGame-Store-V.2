@@ -1,0 +1,129 @@
+<!doctype html>
+{% load static %}
+{% load clp_filters %}
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PixelVault & Co. | Catálogo de Consolas</title>
+
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+    <!-- FontAwesome para los íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="bg-black text-light" style="font-family: 'Outfit', sans-serif;">
+
+    {% include 'partials/navbar.html' %}
+
+    <!-- Hero Section -->
+    <section class="container my-5">
+        <div class="p-4 p-md-5 rounded-4 bg-dark border border-secondary shadow-lg">
+            <div class="row align-items-center">
+                <div class="col-lg-7 py-4">
+                    <span class="badge bg-info text-black px-3 py-2 rounded-pill fw-bold text-uppercase mb-3" style="font-size: 0.75rem;">Colección 2026</span>
+                    <h1 class="display-5 fw-bold mb-3" style="font-family: 'Space Grotesk', sans-serif;">
+                        El templo definitivo del <span class="text-info">gaming clásico</span> y actual.
+                    </h1>
+                    <p class="text-secondary lead mb-4 fs-6">Consolas de nueva generación, ediciones coleccionista y los mejores títulos del mercado al mejor precio.</p>
+                </div>
+                <div class="col-lg-5 text-center d-none d-lg-block">
+                    <i class="fa-solid fa-ghost text-secondary" style="font-size: 10rem; opacity: 0.2;"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección del Catálogo Dinámico -->
+    <main class="container py-5" id="productos">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <div>
+                <h2 class="fw-bold h3 mb-1" style="font-family: 'Space Grotesk', sans-serif;">Hardware Disponible</h2>
+                <p class="text-secondary small mb-0">Nuestro stock de consolas y mandos</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            
+            <!-- Inicio del bucle FOR de Django -->
+            {% for item in productos %}
+            <div class="col-sm-6 col-lg-3">
+                <div class="card bg-dark border-secondary rounded-4 h-100 position-relative overflow-hidden shadow-sm">
+                    
+                    <!-- Etiqueta de Estado dinámica -->
+                    <span class="position-absolute m-3 badge bg-info text-black z-2 text-uppercase">{{ item.estado }}</span>
+                    
+                    <div class="bg-black py-4 d-flex align-items-center justify-content-center" style="height: 200px;">
+                        <!-- Imagen dinámica -->
+                        {% if item.imagen %}
+                        <img src="{% static item.imagen %}" class="img-fluid px-3" style="max-height: 140px; object-fit: contain;" alt="{{ item.nombre }}">
+                        {% else %}
+                        <i class="fa-solid fa-gamepad text-secondary" style="font-size: 4rem; opacity: 0.4;"></i>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="card-body d-flex flex-column p-3">
+                        <span class="text-info small fw-bold text-uppercase">Color: {{ item.color }}</span>
+                        <h5 class="h6 fw-semibold text-white my-2">{{ item.nombre }}</h5>
+                        
+                        <div class="mt-auto">
+                            
+                            <!-- Lógica condicional de controles -->
+                            {% if item.controles %}
+                            <p class="text-secondary small mb-3"><i class="fa-solid fa-gamepad"></i> Controles incluidos: {{ item.controles }}</p>
+                            {% else %}
+                            <p class="text-secondary small mb-3"><i class="fa-solid fa-circle-info"></i> Hardware individual</p>
+                            {% endif %}
+                            
+                            <div class="pt-3 border-top border-secondary text-center">
+                                <span class="fs-4 fw-bold text-white d-block mb-3" style="font-family: 'Space Grotesk', sans-serif;">
+                                    {{ item.precio|clp }}
+                                </span>
+                                
+                                <!-- Botón de detalles dinámico -->
+                                <a href="{% url 'detalle_consola' item.hardware_id %}" class="btn btn-outline-info rounded-2 w-100 fw-bold py-2">
+                                    Ver Detalles
+                                </a>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <!-- Fin del bucle FOR -->
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black border-top border-secondary py-5 mt-5 text-secondary" id="contacto">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <h5 class="text-white fw-bold mb-3"><i class="fa-solid fa-gamepad text-info"></i> PixelVault & Co.</h5>
+                    <p class="small">Tu bóveda de confianza para encontrar desde reliquias hasta la última tecnología en consolas de videojuegos.</p>
+                </div>
+                <div class="col-lg-6 text-lg-end text-start">
+                    <h6 class="text-white mb-3">Soporte Técnico</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Garantías y Devoluciones</a></li>
+                        <li class="mb-2"><a href="#" class="text-decoration-none text-secondary">Contacto: soporte@pixelvault.cl</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="border-secondary my-4">
+            <div class="text-center small text-secondary">
+                <p class="mb-0">&copy; 2026 PixelVault & Co. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  </body>
+</html>

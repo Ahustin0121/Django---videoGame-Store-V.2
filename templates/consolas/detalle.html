@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+{% load static %}
+{% load clp_filters %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Viewport tag esencial para que funcione la responsividad en móviles -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelVault | Detalle de {{ producto.nombre }}</title>
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <!-- FontAwesome para los íconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-black text-light" style="font-family: 'Outfit', sans-serif;">
+
+    <!-- Navbar -->
+    {% include 'partials/navbar.html' %}
+
+    <!-- Sección de Detalles del Producto -->
+    <div class="container py-4 py-md-5 mt-2 mt-md-4 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10">
+                
+                <!-- Tarjeta Principal Oscura -->
+                <div class="card bg-dark border-secondary rounded-4 shadow-lg overflow-hidden">
+                    <div class="row g-0 flex-column flex-md-row">
+                        
+                        <!-- Columna de la Imagen: Borde inferior en móviles, borde derecho en PC -->
+                        <div class="col-12 col-md-6 bg-black d-flex align-items-center justify-content-center p-4 p-md-5 border-bottom border-md-bottom-0 border-md-end border-secondary">
+                            {% if producto.imagen %}
+                            <img src="{% static producto.imagen %}" class="img-fluid" alt="{{ producto.nombre }}" style="max-height: 350px; object-fit: contain;">
+                            {% else %}
+                            <i class="fa-solid fa-gamepad text-secondary" style="font-size: 8rem; opacity: 0.3;"></i>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Columna de la Información -->
+                        <div class="col-12 col-md-6 d-flex flex-column">
+                            <div class="card-body p-4 p-md-5 d-flex flex-column h-100">
+                                
+                                <!-- Estado -->
+                                <span class="badge bg-info text-black px-3 py-2 rounded-pill fw-bold text-uppercase mb-3 align-self-start" style="font-size: 0.75rem;">{{ producto.estado }}</span>
+                                
+                                <!-- Título y Precio -->
+                                <h2 class="fw-bold text-white mb-2 fs-3 fs-md-2" style="font-family: 'Space Grotesk', sans-serif;">{{ producto.nombre }}</h2>
+                                <h3 class="text-info fw-bold mb-4 fs-4 fs-md-3" style="font-family: 'Space Grotesk', sans-serif;">{{ producto.precio|clp }}</h3>
+                                
+                                <!-- Descripción -->
+                                <p class="lead text-secondary fs-6 mb-4">{{ producto.descripcion }}</p>
+                                
+                                <!-- Lista de Características -->
+                                <ul class="list-group list-group-flush border-top border-bottom border-secondary mb-4 bg-transparent">
+                                    <li class="list-group-item bg-transparent text-light border-secondary px-0 py-3">
+                                        <i class="fa-solid fa-palette text-secondary me-2"></i> <strong>Color:</strong> {{ producto.color }}
+                                    </li>
+                                    <li class="list-group-item bg-transparent text-light border-secondary px-0 py-3">
+                                        <i class="fa-solid fa-calendar text-secondary me-2"></i> <strong>Año de Lanzamiento:</strong> {{ producto.ano }}
+                                    </li>
+                                    
+                                    {% if producto.pilas != "no" %}
+                                    <li class="list-group-item bg-transparent text-light border-secondary px-0 py-3">
+                                        <i class="fa-solid fa-battery-half text-secondary me-2"></i> <strong>Usa Pilas:</strong> {{ producto.pilas }}
+                                    </li>
+                                    {% endif %}
+                                    
+                                    <!-- Stock (apilado en pantallas extra pequeñas para evitar desborde) -->
+                                    <li class="list-group-item bg-transparent text-light border-secondary px-0 py-3 d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2">
+                                        <div><i class="fa-solid fa-boxes-stacked text-secondary me-2"></i> <strong>Stock disponible:</strong></div>
+                                        {% if producto.stock > 0 %}
+                                            <span class="badge bg-info text-black fs-6 align-self-start align-self-sm-auto">{{ producto.stock }} unidades</span>
+                                        {% else %}
+                                            <span class="badge bg-danger fs-6 align-self-start align-self-sm-auto">Agotado</span>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+
+                                <!-- Videojuegos asociados (relación inversa related_name='videojuegos') -->
+                                {% if producto.videojuegos.all %}
+                                <div class="mb-4">
+                                    <h6 class="text-white fw-bold"><i class="fa-solid fa-compact-disc text-info me-2"></i>Videojuegos para esta plataforma</h6>
+                                    <ul class="list-group list-group-flush bg-transparent">
+                                        {% for juego in producto.videojuegos.all %}
+                                        <li class="list-group-item bg-transparent text-light border-secondary px-0 py-2">
+                                            <a href="{% url 'detalle_videojuego' juego.pk %}" class="text-decoration-none text-info">{{ juego.nombre }}</a>
+                                            <span class="text-secondary small">— {{ juego.precio|clp }}</span>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
+
+                                <!-- Botones de Acción: Apilados en móvil, uno al lado del otro en PC -->
+                                <div class="mt-auto d-flex flex-column flex-xl-row gap-3">
+                                    <a href="{% url 'consolas' %}" class="btn btn-outline-secondary rounded-3 px-4 py-3 w-100 text-center text-white text-decoration-none">
+                                        <i class="fa-solid fa-arrow-left me-2"></i>Volver
+                                    </a>
+                                    <button class="btn btn-info text-black fw-bold rounded-3 px-4 py-3 w-100">
+                                        <i class="fa-solid fa-cart-plus me-2"></i>Comprar
+                                    </button>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ofertas que incluyen esta consola -->
+                {% if paquetes %}
+                <div class="card bg-dark border-info rounded-4 shadow-lg mt-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold text-white mb-3">
+                            <i class="fa-solid fa-tags text-info me-2"></i>Paquetes con esta consola
+                        </h5>
+                        <div class="row g-3">
+                            {% for paquete in paquetes %}
+                            <div class="col-12 col-md-6">
+                                <div class="border border-secondary rounded-3 p-3 h-100">
+                                    <div class="d-flex justify-content-between align-items-start gap-2">
+                                        <div>
+                                            <p class="mb-1 text-white fw-semibold">{{ paquete.titulo }}</p>
+                                            <p class="small text-secondary mb-2">
+                                                {{ paquete.consola.nombre }} + {{ paquete.videojuego.nombre }}
+                                            </p>
+                                        </div>
+                                        <span class="badge bg-success">{{ paquete.descuento }}% OFF</span>
+                                    </div>
+                                    <p class="mb-1">
+                                        <span class="text-secondary text-decoration-line-through small">{{ paquete.precio_base|clp }}</span>
+                                        <span class="text-info fw-bold fs-5 ms-2">{{ paquete.precio_final|clp }}</span>
+                                    </p>
+                                    <p class="small text-success mb-0">Ahorras {{ paquete.ahorro|clp }}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5.3 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>
