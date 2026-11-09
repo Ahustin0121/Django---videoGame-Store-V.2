@@ -15,6 +15,52 @@
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Estilos del panel de filtros para que se lea sobre el tema oscuro */
+        #filtros label {
+            color: #e9ecef;
+            font-weight: 600;
+            font-size: .85rem;
+            margin-bottom: .3rem;
+            display: block;
+        }
+        #filtros p {
+            margin-bottom: .9rem;
+        }
+        #filtros .helptext {
+            color: #8f9aa3;
+            font-size: .75rem;
+        }
+        #filtros input[type="text"],
+        #filtros input[type="number"],
+        #filtros select {
+            background-color: #1c1c1f;
+            border: 1px solid #3d3d40;
+            color: #fff;
+        }
+        #filtros input::placeholder {
+            color: #6c757d;
+        }
+        #filtros input:focus,
+        #filtros select:focus {
+            background-color: #1c1c1f;
+            color: #fff;
+            border-color: #0dcaf0;
+            box-shadow: 0 0 0 .2rem rgba(13, 202, 240, .2);
+        }
+        #filtros .form-check-input {
+            background-color: #1c1c1f;
+            border-color: #6c757d;
+        }
+        #filtros .form-check-input:checked {
+            background-color: #0dcaf0;
+            border-color: #0dcaf0;
+        }
+        #filtros .form-check-label {
+            color: #e9ecef;
+        }
+    </style>
   </head>
   <body class="bg-black text-light" style="font-family: 'Outfit', sans-serif;">
 
@@ -48,10 +94,36 @@
         </div>
 
         <div class="row g-4">
+            <!-- Columna lateral: Formulario de Filtros (django-filter) -->
+            <div class="col-12 col-lg-3">
+                <div class="card bg-dark border-secondary rounded-4 shadow-sm" id="filtros">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3 text-white">
+                            <i class="fa-solid fa-filter text-info me-2"></i>Filtrar Consolas
+                        </h5>
+                        <form method="get">
+                            {{ form.as_p }}
+                            <div class="d-grid gap-2 mt-3">
+                                <button type="submit" class="btn btn-info fw-bold text-black">
+                                    <i class="fa-solid fa-magnifying-glass me-1"></i>Aplicar filtros
+                                </button>
+                                <a href="{% url 'consolas' %}" class="btn btn-outline-secondary btn-sm">
+                                    Limpiar filtros
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna principal: Resultados -->
+            <div class="col-12 col-lg-9">
+                <p class="text-secondary small">Mostrando {{ productos|length }} consola(s) encontrada(s).</p>
+                <div class="row g-4">
             
             <!-- Inicio del bucle FOR de Django -->
             {% for item in productos %}
-            <div class="col-sm-6 col-lg-3">
+            <div class="col-sm-6 col-lg-4">
                 <div class="card bg-dark border-secondary rounded-4 h-100 position-relative overflow-hidden shadow-sm">
                     
                     <!-- Etiqueta de Estado dinámica -->
@@ -94,9 +166,19 @@
                     </div>
                 </div>
             </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-dark border-secondary text-center py-5">
+                    <i class="fa-solid fa-magnifying-glass fs-1 d-block mb-3 text-secondary"></i>
+                    <p class="mb-1 text-white fw-semibold">No se encontraron consolas con esos filtros.</p>
+                    <p class="text-secondary small mb-0">Prueba quitando algún filtro o presiona "Limpiar filtros".</p>
+                </div>
+            </div>
             {% endfor %}
             <!-- Fin del bucle FOR -->
 
+                </div>
+            </div>
         </div>
     </main>
 

@@ -1,5 +1,7 @@
 from django import forms
 
+from consolas.models import Consola
+
 from .models import Paquete, Videojuego
 
 
@@ -107,6 +109,8 @@ class PaqueteForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Solo se pueden armar paquetes con consolas que están a la venta
+        self.fields['consola'].queryset = Consola.objects.filter(precio__gt=0)
         placeholders = {
             'nombre': 'Ej: Combo PS5 + Cyberpunk',
             'descuento': 'Ej: 15',

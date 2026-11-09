@@ -8,7 +8,7 @@ from .models import Videojuego
 
 
 class VideojuegoFilter(django_filters.FilterSet):
-    """Filtros del catálogo usando el ORM de Django (lookups gte, lte, icontains, Q)."""
+    """Filtros del catálogo usando el ORM de Django (icontains, iexact, Q y exclusiones)."""
 
     buscar = django_filters.CharFilter(
         method='filtrar_texto',
@@ -29,22 +29,6 @@ class VideojuegoFilter(django_filters.FilterSet):
         empty_label='Todos los estados',
         choices=(),
     )
-    precio_min = django_filters.NumberFilter(
-        field_name='precio',
-        lookup_expr='gte',
-        label='Precio mínimo',
-        widget=forms.NumberInput(
-            attrs={'placeholder': 'Desde $', 'min': 0, 'step': 100}
-        ),
-    )
-    precio_max = django_filters.NumberFilter(
-        field_name='precio',
-        lookup_expr='lte',
-        label='Precio máximo',
-        widget=forms.NumberInput(
-            attrs={'placeholder': 'Hasta $', 'min': 0, 'step': 100}
-        ),
-    )
     disponible = django_filters.BooleanFilter(
         method='filtrar_disponible',
         label='Solo con stock',
@@ -57,8 +41,6 @@ class VideojuegoFilter(django_filters.FilterSet):
             'buscar',
             'consola',
             'estado',
-            'precio_min',
-            'precio_max',
             'disponible',
         ]
 

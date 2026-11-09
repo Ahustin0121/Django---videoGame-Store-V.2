@@ -8,14 +8,30 @@ from django.views.generic import (
     UpdateView,
 )
 
+from .filters import ConsolaFilter
 from .forms import ConsolaForm
 from .models import Consola
 
 
 class ConsolaListView(ListView):
+    """Catálogo público: solo consolas que realmente están a la venta."""
+
     model = Consola
     template_name = 'consolas/consolas.html'
     context_object_name = 'productos'
+
+    def get_queryset(self):
+        # Las plataformas cargadas solo para asociar videojuegos tienen precio 0
+        queryset = super().get_queryset().filter(precio__gt=0)
+        # Conectamos request.GET con el FilterSet
+        self.filterset = ConsolaFilter(self.request.GET, queryset=queryset)
+        return self.filterset.qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Pasamos el formulario de filtros al template
+        context['form'] = self.filterset.form
+        return context
 
 
 class ConsolaDetailView(DetailView):

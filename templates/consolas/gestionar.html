@@ -18,6 +18,11 @@
             <div>
                 <h1 class="fw-bold h2 mb-1">Panel de Consolas y Mandos</h1>
                 <p class="text-secondary small mb-0">Administra el hardware disponible en la tienda.</p>
+                <p class="text-secondary small mb-0 mt-2">
+                    <i class="fa-solid fa-circle-info me-1"></i>
+                    Las filas con precio <strong>$0</strong> y estado <strong>Plataforma</strong> no se venden:
+                    existen solo para asociarlas como plataforma en los videojuegos y en los paquetes.
+                </p>
             </div>
             <div class="d-flex gap-2 flex-wrap">
                 <a href="{% url 'gestionar_videojuegos' %}" class="btn btn-outline-info fw-bold px-4 py-2">
@@ -51,9 +56,17 @@
                         <td>{{ item.pk }}</td>
                         <td class="fw-semibold">{{ item.nombre }}</td>
                         <td><code>{{ item.hardware_id }}</code></td>
-                        <td>{{ item.precio|clp }}</td>
                         <td>
-                            {% if item.stock > 0 %}
+                            {% if item.precio > 0 %}
+                                {{ item.precio|clp }}
+                            {% else %}
+                                <span class="badge bg-secondary">Solo plataforma</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if item.precio == 0 and item.estado == 'Plataforma' %}
+                                <span class="badge bg-secondary">No se vende</span>
+                            {% elif item.stock > 0 %}
                                 <span class="badge bg-info text-black">{{ item.stock }}</span>
                             {% else %}
                                 <span class="badge bg-danger">Agotado</span>
